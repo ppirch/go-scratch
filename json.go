@@ -9,7 +9,7 @@ import (
 func responseWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	dat, err := json.Marshal(payload)
 	if err != nil {
-		log.Println("Failed to Marshal JSON response: %v", payload)
+		log.Printf("Failed to Marshal JSON response: %v", payload)
 		w.WriteHeader(500)
 		return
 	}
