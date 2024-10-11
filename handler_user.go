@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
+	"github.com/ppirch/rssagg/internal/auth"
 	"github.com/ppirch/rssagg/internal/database"
 )
 
@@ -30,6 +31,22 @@ func (apiCfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Reques
 
 	if err != nil {
 		responseWithError(w, 500, fmt.Sprintf("Error creating user: %v", err))
+		return
+	}
+
+	responseWithJSON(w, 201, databaseUserToAPIUser(user))
+}
+
+func (apiCfg *apiConfig) handlerGetUser(w http.ResponseWriter, r *http.Request) {
+	apiKey, err := auth.GetAPIKey(r)
+	if err != nil {
+		responseWithError(w, 401, fmt.Sprintf("Authentication error: %v", err))
+		return
+	}
+
+	user, err := apiCfg.DB.GetUserByAPIKey(r.Context(), apiKey)
+	if err != nil {
+		responseWithError(w, 404, fmt.Sprintf("User not found: %v", err))
 		return
 	}
 
