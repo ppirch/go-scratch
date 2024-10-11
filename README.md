@@ -1,0 +1,2 @@
+# go-scratch
+learn go
